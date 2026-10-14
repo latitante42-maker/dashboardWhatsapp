@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Dashboard</title>
+<style>
+body{margin:0;background:black;color:white;font-family:-apple-system;text-align:center;height:100vh;overflow:hidden}
+#loader{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center}
+#bar{width:80%;height:10px;background:#333;border-radius:10px;margin-top:20px;overflow:hidden}
+#fill{height:100%;width:0%;background:#25D366;transition:width 0.1s}
+#home{display:none;padding:20px}
+.app{width:60px;height:60px;background:#25D366;border-radius:15px;display:inline-flex;justify-content:center;align-items:center;font-size:30px;margin:10px}
+input{padding:15px;width:80%;border-radius:10px;border:none;margin-top:20px;font-size:18px}
+button{padding:15px 30px;background:#25D366;color:white;border:none;border-radius:10px;margin-top:15px;font-size:18px;font-weight:bold}
+</style>
+</head>
+<body>
+<audio id="song" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+<div id="loader">
+<h1 id="num">0</h1>
+<p>Caricamento...</p>
+<div id="bar"><div id="fill"></div></div>
+</div>
+
+<div id="home">
+<h2>La tua Dashboard</h2>
+<div class="app" onclick="openWa()">💬</div>
+<p>Clicca su WhatsApp</p>
+<div id="waBox" style="display:none">
+<input id="phone" placeholder="39333... senza +">
+<button onclick="getCode()">Richiedi Codice</button>
+<h1 id="codice"></h1>
+<p id="info"></p>
+</div>
+</div>
+
+<script>
+let c=0;
+let song=document.getElementById('song');
+song.play().catch(()=>{});
+let interval=setInterval(()=>{
+c+=68; // 8282 / 120 = 68 ogni 0.1s = 12 sec
+if(c>=8282){c=8282; clearInterval(interval); document.getElementById('loader').style.display='none'; document.getElementById('home').style.display='block';}
+document.getElementById('num').innerText=c;
+document.getElementById('fill').style.width=(c/8282*100)+'%';
+},100);
+
+function openWa(){document.getElementById('waBox').style.display='block';}
+async function getCode(){
+let n=document.getElementById('phone').value;
+document.getElementById('info').innerText='Genero codice...';
+let res=await fetch('https://TUO-SERVER.onrender.com/code?number='+n);
+let data=await res.json();
+document.getElementById('codice').innerText=data.code;
+document.getElementById('info').innerText='Vai su WhatsApp > Dispositivi collegati > Collega con codice e inserisci questo';
+}
+</script>
+</body>
+</html>
